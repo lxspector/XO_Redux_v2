@@ -1,36 +1,20 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import Square from './Square'
+import React from 'react';
+import Square from './Square';
 
-function Board(props) {
-  function renderSquare(i) {
-    return <Square value={props.squares[i]} onClick={() => props.onClick(i)} />
-  }
+const Board = ({ squares, onClick }) => {
+  const renderSquare = (i) => (
+    <Square key={i} value={squares[i]} onClick={() => onClick(i)} />
+  );
 
   return (
     <div>
-      <div className="board-row">
-        {renderSquare(0)}
-        {renderSquare(1)}
-        {renderSquare(2)}
-      </div>
-      <div className="board-row">
-        {renderSquare(3)}
-        {renderSquare(4)}
-        {renderSquare(5)}
-      </div>
-      <div className="board-row">
-        {renderSquare(6)}
-        {renderSquare(7)}
-        {renderSquare(8)}
-      </div>
+      {[0, 1, 2].map((row) => (
+        <div key={row} className="board-row">
+          {[0, 1, 2].map((col) => renderSquare(row * 3 + col))}
+        </div>
+      ))}
     </div>
-  )
-}
+  );
+};
 
-Board.propTypes = {
-  squares: PropTypes.arrayOf(PropTypes.string).isRequired,
-  onClick: PropTypes.func.isRequired,
-}
-
-export default Board
+export default Board;

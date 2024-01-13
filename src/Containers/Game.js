@@ -1,75 +1,44 @@
-import React, { useState } from 'react'
-import Board from '../Layout/Board'
+import React, { useEffect, useState } from 'react';
+import store from './index';
+import { makeMove, resetGame } from './actions';
+import Board from '../Layout/Board';
 
-function Game() {
-  const [history, setHistory] = useState([{ squares: Array(9).fill(null) }])
-  const [stepNumber, setStepNumber] = useState(0)
-  const [xIsNext, setXIsNext] = useState(true)
+const Game = () => {
+  const [state, setState] = useState(store.getState());
 
-  function handleClick(i) {
-    const currentHistory = history.slice(0, stepNumber + 1)
-    const current = currentHistory[currentHistory.length - 1]
-    const squares = current.squares.slice()
+  useEffect(() => {
+    const unsubscribe = store.subscribe(() => setState(store.getState()));
+    return unsubscribe;
+  }, []);
 
-    if (calculateWinner(squares) || squares[i]) {
-      return
+  const handleMove = (index) => {
+    if (!state.winner && !state.board[index]) {
+      store.dispatch(makeMove(index, state.xIsNext ? 'X' : 'O'));
     }
+  };
 
-    squares[i] = xIsNext ? 'X' : 'O'
-    setHistory(currentHistory.concat([{ squares: squares }]))
-    setStepNumber(currentHistory.length)
-    setXIsNext(!xIsNext)
-  }
+  const handleReset = () => {
+    store.dispatch(resetGame());
+  };
 
-  function restartGame() {
-    setHistory([{ squares: Array(9).fill(null) }])
-    setStepNumber(0)
-    setXIsNext(true)
-  }
-
-  const current = history[stepNumber]
-  const winner = calculateWinner(current.squares)
-
-  let status
-  if (winner) {
-    status = `Winner: ${winner}`
-  } else if (history.length === 10) {
-    status = 'Draw!'
+  let status;
+  if (state.winner) {
+    status = `Победитель: ${state.winner}`;
   } else {
-    status = `Next player: ${xIsNext ? 'X' : 'O'}`
+    status = `Следующий ход: ${state.xIsNext ? 'X' : 'O'}`;
   }
 
   return (
     <div className="game">
       <div className="game-board">
-        <Board squares={current.squares} onClick={(i) => handleClick(i)} />
+        <Board squares={state.board} onClick={handleMove} />
       </div>
       <div className="game-info">
         <div>{status}</div>
-        <button onClick={restartGame}>Start Over</button>
+        <button onClick={handleReset}>Начать заново</button>
       </div>
     </div>
-  )
-}
+  );
+};
 
-function calculateWinner(squares) {
-  const lines = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-  ]
-  for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i]
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a]
-    }
-  }
-  return null
-}
-
-export default Game
+export default Game;
