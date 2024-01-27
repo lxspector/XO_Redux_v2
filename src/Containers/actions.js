@@ -1,12 +1,13 @@
-export const MAKE_MOVE = 'MAKE_MOVE';
-export const RESET_GAME = 'RESET_GAME';
+export const makeMove = (index, symbol) => {
+  return {
+    type: 'MAKE_MOVE',
+    index,
+    symbol,
+  };
+};
 
-export const makeMove = (index, symbol) => ({
-  type: MAKE_MOVE,
-  index,
-  symbol,
-});
-
-export const resetGame = () => ({
-  type: RESET_GAME,
-});
+export const resetGame = () => {
+  return {
+    type: 'RESET_GAME',
+  };
+};

@@ -1,6 +1,3 @@
-// В вашем reducer.js
-import { MAKE_MOVE, RESET_GAME } from './actions';
-
 function calculateWinner(squares) {
   const lines = [
     [0, 1, 2],
@@ -31,7 +28,7 @@ const initialState = {
 
 const gameReducer = (state = initialState, action) => {
   switch (action.type) {
-    case MAKE_MOVE:
+    case 'MAKE_MOVE':
       const newBoard = state.board.slice();
       if (newBoard[action.index] || state.winner) {
         return state;
@@ -45,7 +42,7 @@ const gameReducer = (state = initialState, action) => {
         winner: winner,
       };
 
-    case RESET_GAME:
+    case 'RESET_GAME':
       return initialState;
 
     default:

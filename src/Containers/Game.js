@@ -1,24 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import store from './index';
+import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { makeMove, resetGame } from './actions';
 import Board from '../Layout/Board';
 
 const Game = () => {
-  const [state, setState] = useState(store.getState());
-
-  useEffect(() => {
-    const unsubscribe = store.subscribe(() => setState(store.getState()));
-    return unsubscribe;
-  }, []);
+  const dispatch = useDispatch();
+  const state = useSelector((state) => state);
 
   const handleMove = (index) => {
     if (!state.winner && !state.board[index]) {
-      store.dispatch(makeMove(index, state.xIsNext ? 'X' : 'O'));
+      dispatch(makeMove(index, state.xIsNext ? 'X' : 'O'));
     }
   };
 
   const handleReset = () => {
-    store.dispatch(resetGame());
+    dispatch(resetGame());
   };
 
   let status;
